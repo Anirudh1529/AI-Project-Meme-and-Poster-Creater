@@ -3,7 +3,7 @@ import google.generativeai as genai
 import os
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
-from google.colab import userdata # Only for Colab to fetch API key from secrets
+# from google.colab import userdata # This is Colab-specific, remove for Streamlit Cloud
 
 st.set_page_config(layout="wide")
 
@@ -13,14 +13,13 @@ st.write("Generate creative memes and posters with AI-powered captions!")
 # Initialize the Generative Model within app.py
 try:
     api_key = os.getenv("GOOGLE_API_KEY")
-    if not api_key:
-        api_key = userdata.get('GOOGLE_API_KEY', None)
+    # Removed fallback to userdata.get() as it's Colab-specific
 
     if api_key:
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel('gemini-pro')
     else:
-        st.error("Google API Key not found. Please set 'GOOGLE_API_KEY' in Colab secrets or environment variables.")
+        st.error("Google API Key not found. Please set 'GOOGLE_API_KEY' in Streamlit Cloud secrets or environment variables.")
         model = None
 except Exception as e:
     st.error(f"Error configuring Gemini API: {e}")
@@ -98,4 +97,3 @@ if uploaded_file is not None:
     st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
 else:
     st.info("Upload an image to see a preview here.")
-
